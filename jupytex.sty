@@ -1,0 +1,51 @@
+\RequirePackage[makestderr]{pythontex}
+\RequirePackage[many]{tcolorbox}
+\tcbuselibrary{breakable}
+\RequirePackage{color, xcolor}
+\RequirePackage{xparse}
+
+\newtcolorbox[]{outframebox}{enhanced, fuzzy halo=1.8pt with black!30, breakable=true,
+colback=white,
+boxrule=0.1pt,
+top=0mm,
+bottom=0mm,
+right=0mm,
+left=0mm,arc=0pt,boxsep=10mm,}
+
+
+\newtcolorbox[auto counter]{inputframebox}[1][]{enhanced,tcbox raise base,breakable=true,
+frame hidden,
+top=0mm,
+bottom=0mm,
+right=0mm,
+left=10mm,arc=1pt,boxsep=10mm,
+overlay={\begin{tcbclipinterior}
+\fill[white] ([xshift=10mm]frame.south west) rectangle node[text=blue,] {In[\thetcbcounter]:} (frame.north west);\end{tcbclipinterior}}}
+
+\newtcolorbox[]{outputframebox}{
+enhanced,enforce breakable=true,shrink break goal=15mm,
+colback=white,
+frame hidden,
+top=0mm,
+bottom=0mm,
+right=0mm,
+left=10mm,
+boxsep=0mm,}
+
+\begin{pycode}
+import subprocess
+def run_and_typeset(fname):
+    print(subprocess.check_output(['python', fname]).decode("utf-8"))
+    pytex.add_dependencies(fname)
+\end{pycode}
+
+\edef\runandtypeset#1{\pyc{run_and_typeset("#1")}}
+
+\newcounter{pyfilenumber}
+\setcounter{pyfilenumber}{0}
+
+\NewDocumentEnvironment{jupytex}{}
+{\edef\currentfile{jupytex\arabic{pyfilenumber}.py}\VerbatimOut{\currentfile}}
+{\endVerbatimOut\edef\currentfile{jupytex\arabic{pyfilenumber}.py}
+\begin{inputframebox}\inputpygments{python}{\currentfile}\end{inputframebox}
+\begin{outputframebox}\expandafter\runandtypeset\expandafter{\currentfile}\end{outputframebox}\refstepcounter{pyfilenumber}}
