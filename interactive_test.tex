@@ -1,0 +1,24 @@
+\documentclass[dvipdfmx,uplatex]{jsarticle}
+\usepackage{ifthen}
+\usepackage{comment}
+\def\inputcontent{}
+\def\newinputcontent{}
+\parindent=0pt
+\begin{document}
+
+\whiledo{\NOT\equal{\inputcontent}{\par\par\par}}{%
+  \def\inputcontent{}%
+  \typeout{input python code}%
+  \read-1 to \inputcontent%
+  \whiledo{\NOT\equal{\newinputcontent}{\par}}{%
+    \read-1 to \newinputcontent%
+    \edef\inputcontent{\inputcontent\par\newinputcontent}%
+  }%
+  \def\newinputcontent{}%
+  \ifthenelse{\NOT\equal{\inputcontent}{\par\par\par}}{%
+  ------------------------ \\%
+  \inputcontent%
+  ------------------------ \\%
+  }{}%
+}%
+\end{document}
