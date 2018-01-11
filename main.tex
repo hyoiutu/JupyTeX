@@ -1,6 +1,11 @@
 \documentclass[uplatex,dvipdfmx]{jsarticle}
 \usepackage{jupytex}
+\usepackage{ifthen}
+\usepackage{pgffor}
+\usepackage{newfile}
+\usepackage[cache=false]{minted}
 \pagestyle{empty}
+\parindent=0pt
 
 \begin{document}
 \begin{outframebox}
@@ -33,5 +38,17 @@ y = numpy.cos(x)
 plt.plot(x,y)
 plt.show()
 \end{jupytex}
+
+
+\foreach \x in {0,...,100}{%
+\IfFileExists{test\x.py}{
+\begin{inputframebox}
+\inputminted{python}{test\x.py}
+\end{inputframebox}
+\begin{outputframebox}
+\expandafter\runandtypeset\expandafter{test\x.py}
+\end{outputframebox}
+}
+}%
 \end{outframebox}
 \end{document}

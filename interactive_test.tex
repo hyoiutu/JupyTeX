@@ -1,24 +1,28 @@
 \documentclass[dvipdfmx,uplatex]{jsarticle}
 \usepackage{ifthen}
 \usepackage{comment}
-\def\inputcontent{}
+\usepackage{filecontents}
+\usepackage{newfile}
+
+\newoutputstream{mystream}
+
+\newcounter{filenumber}
+\setcounter{filenumber}{0}
 \def\newinputcontent{}
 \parindent=0pt
-\begin{document}
 
-\whiledo{\NOT\equal{\inputcontent}{\par\par\par}}{%
-  \def\inputcontent{}%
+\begin{document}
+\whiledo{\NOT\equal{\newinputcontent}{\par\par\par}}{%
+  \openoutputfile{test\arabic{filenumber}.py}{mystream}%
   \typeout{input python code}%
-  \read-1 to \inputcontent%
   \whiledo{\NOT\equal{\newinputcontent}{\par}}{%
     \read-1 to \newinputcontent%
-    \edef\inputcontent{\inputcontent\par\newinputcontent}%
+    \addtostream{mystream}{\newinputcontent}
   }%
-  \def\newinputcontent{}%
-  \ifthenelse{\NOT\equal{\inputcontent}{\par\par\par}}{%
-  ------------------------ \\%
-  \inputcontent%
-  ------------------------ \\%
+  \closeoutputstream{mystream}%
+  \def\newinputcontent{}
+  \stepcounter{filenumber}%
   }{}%
+
 }%
 \end{document}
