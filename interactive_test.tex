@@ -1,8 +1,8 @@
 \documentclass[dvipdfmx,uplatex]{jsarticle}
 \usepackage{ifthen}
 \usepackage{comment}
-\usepackage{filecontents}
 \usepackage{newfile}
+\usepackage{interactive}
 
 \newoutputstream{mystream}
 
@@ -16,8 +16,12 @@
   \openoutputfile{test\arabic{filenumber}.py}{mystream}%
   \typeout{input python code}%
   \whiledo{\NOT\equal{\newinputcontent}{\par}}{%
-    \read-1 to \newinputcontent%
-    \addtostream{mystream}{\newinputcontent}
+    \interactiveVerbatim
+    \read-1 to \newinputcontent
+    \endinteractiveVerbatim
+    \ifthenelse{\NOT\equal{\newinputcontent}{\par}}{%
+      \addtostream{mystream}{\newinputcontent}
+    }{}%
   }%
   \closeoutputstream{mystream}%
   \def\newinputcontent{}
