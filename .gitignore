@@ -432,3 +432,6 @@ venv.bak/
 # expex forward references with \gathertags
 
 # End of https://www.gitignore.io/api/tex,latex,python
+
+# my setting
+*.py
